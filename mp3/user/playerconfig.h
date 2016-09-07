@@ -4,12 +4,26 @@
 /*
 Define the access point name and its password here.
 */
-#define AP_NAME "testjmd"
-#define AP_PASS "pannenkoek"
+#define AP_NAME "sushibento"
+#define AP_PASS "wagahai wa hime de aru"
+//#define AP_NAME "MobileLab"
+//#define AP_PASS "great fish companion"
+//#define AP_NAME "MASSCHALLENGE"
+//#define AP_PASS "innovation2016++"
 
 /* Define stream URL here. For example, the URL to the MP3 stream of a certain Dutch radio station
 is http://icecast.omroep.nl/3fm-sb-mp3 . This translates of a server name of "icecast.omroep.nl"
 and a path of "/3fm-sb-mp3". The port usually is 80 (the standard HTTP port) */
+#if 1
+#define PLAY_SERVER "stream.srg-ssr.ch"
+#define PLAY_PATH "/m/couleur3/mp3_128"
+#define PLAY_PORT 80
+#endif
+#if 0
+#define PLAY_SERVER "streaming211.radionomy.com"
+#define PLAY_PATH "/countryradiousacom"
+#define PLAY_PORT 80
+#endif
 #if 0
 #define PLAY_SERVER "icecast.omroep.nl"
 #define PLAY_PATH "/3fm-sb-mp3"
@@ -26,7 +40,7 @@ Here's a DI.fm stream
 
 /* You can use something like this to connect to a local mpd server which has a configured 
 mp3 output: */
-#if 1
+#if 0
 #define PLAY_SERVER "192.168.33.128"
 #define PLAY_PATH "/"
 #define PLAY_PORT 8000
@@ -54,7 +68,7 @@ Unfortunately, adding or deleting samples isn't very good for the audio quality.
 want better quality, turn this off and/or feel free to implement a better algorithm.
 WARNING: Don't use this define if you play non-stream files. It will presume the sample clock
 on the server side is waaay too fast and will default to playing back the stream too fast.*/
-#define ADD_DEL_SAMPLES
+//#define ADD_DEL_SAMPLES
 
 /*ADD_DEL_SAMPLES parameter:
 Size of the cumulative buffer offset before we are going to add or remove a sample
@@ -71,7 +85,7 @@ Same as ADD_DEL_BUFFPERSAMP but for systems without a big SPI RAM chip to buffer
 sample rate we send out somewhat closer to the real sample rate of the MP3 stream. Some codecs
 however (e.g. the PCM5102) will not output anything when this happens. Undefine the following
 define in that case, it makes the I2S port always send out strictly 16-bit samples.*/
-#define ALLOW_VARY_SAMPLE_BITS
+//#define ALLOW_VARY_SAMPLE_BITS
 
 
 /*While connecting an I2S codec to the I2S port of the ESP is obviously the best way to get nice
@@ -92,7 +106,7 @@ R/C lowpass filter, eg 100 ohm in series with the output, 100NF from there to gr
 This will clock the ESP at 160MHz; the delta-sigma process eats just a bit too much
 CPU power to run stable at 80MHz without causing DMA dropouts.
 */
-#define DELTA_SIGMA_HACK
+//#define DELTA_SIGMA_HACK
 
 /*While a large (tens to hundreds of K) buffer is necessary for Internet streams, on a
 quiet network and with a direct connection to the stream server, you can get away with

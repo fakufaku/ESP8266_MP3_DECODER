@@ -10,6 +10,8 @@
 *******************************************************************************/
 #include "esp_common.h"
 
+#include "gpio.h"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
@@ -338,9 +340,14 @@ void ICACHE_FLASH_ATTR tskreader(void *pvParameters) {
 	int t;
 	int fd;
 	int c=0;
+
 	while(1) {
 		fd=openConn(streamHost, streamPath);
 		printf("Reading into SPI RAM FIFO...\n");
+
+    // Turn LED off while playing
+    gpio_output_set(0, BIT13, BIT13, 0);
+
 		do {
 			n=read(fd, wbuf, sizeof(wbuf));
 			if (n>0) spiRamFifoWrite(wbuf, n);
@@ -356,6 +363,10 @@ void ICACHE_FLASH_ATTR tskreader(void *pvParameters) {
 		} while (n>0);
 		close(fd);
 		printf("Connection closed.\n");
+    
+    // Turn LED on when not playing (connection lost
+    gpio_output_set(BIT13, 0, BIT13, 0);
+
 	}
 }
 
@@ -403,6 +414,15 @@ void ICACHE_FLASH_ATTR user_init(void) {
 	//Set the UART to 115200 baud
 	UART_SetBaudrate(0, 115200);
 
+  //gpio_init();
+  // Turn HIGH GPIO5 to turn on MCLK
+  //Set GPIO5 to output mode
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO5_U, FUNC_GPIO5); // gpio5 (mclk enable)
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_MTCK_U, FUNC_GPIO13); // gpio13 (led)
+
+  //Set GPIO5 high (MCLK oscillator on) and GPIO13 high (led on)
+  gpio_output_set(BIT5 | BIT13, 0, BIT5 | BIT13, 0);
+  
 	//Initialize the SPI RAM chip communications and see if it actually retains some bytes. If it
 	//doesn't, warn user.
 	if (!spiRamFifoInit()) {
